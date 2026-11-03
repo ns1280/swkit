@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+﻿# -*- coding: utf-8 -*-
 """SolidWorks 装配通用操作（Windows Python + comtypes + swraw）。
 
 只依赖标准库与本包 sw/；不读 spec，全部输入来自 plan.json。
@@ -101,7 +101,7 @@ def find_feature(p, type_name):
     return out
 
 
-def create_axis(p, y, z, name="J1_AXIS"):
+def create_axis(p, y, z, name="HINGE_AXIS"):
     """在零件/装配体内建参考轴：Y=y（Front 偏移）与 Z=z（Top 偏移）两平面的交线。"""
     front, top, _ = planes_of(p)
     fm = ptr_of_feature_manager(p)
@@ -388,3 +388,4 @@ def select_bore(p, bore, append=False):
             prm = swraw.array_items(swraw.call(surf, "CylinderParams", prop=True))
             info["radius_mm"] = round(prm[6] * 1000, 3)
     return info
+
