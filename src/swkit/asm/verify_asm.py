@@ -71,7 +71,7 @@ def main(plan_path=None):
     ok = ok and found == len(plan["subs"])
     print("配合特征：", mates if mates else "（配合在 MateGroup 内，无法用 API 逐个读取）")
     print("工作态核对：", "PASS" if ok else "FAIL")
-    sw.CloseDoc(doc.GetTitle)
+    sw.CloseDoc(plan["top"]["file"])
     return 0 if ok else 1
 
 

@@ -75,6 +75,10 @@ def cmd_preview(spec):
 def cmd_build(spec, only=None):
     need_windows("build")
     pp, plan = plan_of(spec)
+    # 先关掉本项目遗留的文档：装配体打开时会把零件一起载入内存，
+    # 此时 SaveAs3 覆盖同名零件会静默失败（文件时间戳不变、脚本却报 OK）。
+    from swkit.asm import docs as docsmod
+    docsmod.main("close", pp)
     state_path = os.path.join(plan["dirs"]["jobs"], "built.json")
     state = {}
     if os.path.exists(state_path):
@@ -92,11 +96,16 @@ def cmd_build(spec, only=None):
         if os.path.exists(p["out"]) and state.get(p["name"]) == h:
             print("跳过（未变化）", p["name"])
             continue
+        before = os.path.getmtime(p["out"]) if os.path.exists(p["out"]) else 0.0
         r = run_cscript([vbs, p["job"], plan["part_template"]])
         out = (r.stdout or "").strip()
         print("   ", out or (r.stderr or "").strip())
+        after = os.path.getmtime(p["out"]) if os.path.exists(p["out"]) else 0.0
         if r.returncode != 0 or not os.path.exists(p["out"]):
-            raise SystemExit("零件生成失败：%s" % p["name"])
+            raise SystemExit("零件生成失败：%s（详见 %s.log）" % (p["name"], p["job"]))
+        if after <= before:
+            raise SystemExit("零件没有真正写盘（时间戳未变）：%s。"
+                             "通常是文件被 SolidWorks 占用：先跑 swkit docs close，再重试。" % p["name"])
         state[p["name"]] = h
         with open(state_path, "w", encoding="utf-8") as f:
             json.dump(state, f, indent=1)

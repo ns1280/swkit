@@ -51,7 +51,7 @@ def main(plan_path=None):
     H.screenshots(doc, os.path.join(plan["dirs"]["preview"], "%s_FOLD%g" % (plan["project"], deg)))
     doc.SaveAs3(plan["top"]["fold_file"], 0, 0)
     print("折叠副本已保存：", plan["top"]["fold_file"], os.path.exists(plan["top"]["fold_file"]))
-    sw.CloseDoc(doc.GetTitle)
+    sw.CloseDoc(plan["top"]["file"])
     print("原总装保持工作态：", plan["top"]["file"])
 
 

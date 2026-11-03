@@ -17,7 +17,7 @@ def main(plan_path=None):
     out = os.path.join(plan["dirs"]["preview"], "01_轴测.bmp")
     H.shot_iso_zup(doc, out)
     print("截图：", out, "调用序列：", H.VIEW_ISO_Z_UP)
-    sw.CloseDoc(doc.GetTitle)
+    sw.CloseDoc(plan["top"]["file"])
 
 
 if __name__ == "__main__":

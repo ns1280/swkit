@@ -50,7 +50,7 @@ def build_sub(sw, plan, sub):
         raise SystemExit("插入位置超差，需按实测偏差二遍重插")
     asm.SaveAs3(sub["file"], 0, 0)
     print("   保存", sub["file"], os.path.exists(sub["file"]))
-    sw.CloseDoc(asm.GetTitle)
+    sw.CloseDoc(sub["file"])
 
 
 def _plane_ref(md, which):
@@ -212,7 +212,7 @@ def build_top(sw, plan):
     H.shot_iso_zup(asm, os.path.join(plan["dirs"]["preview"], "01_轴测.bmp"))
     asm.SaveAs3(plan["top"]["file"], 0, 0)
     print("   保存", plan["top"]["file"], os.path.exists(plan["top"]["file"]))
-    sw.CloseDoc(asm.GetTitle)
+    sw.CloseDoc(plan["top"]["file"])
 
 
 def main(plan_path=None):

@@ -363,7 +363,7 @@ def color_part(sw, path, rgb):
                    put=True)
     swraw.call(p, "EditRebuild3")
     swraw.call(p, "Save")
-    sw.CloseDoc(doc.GetTitle)
+    sw.CloseDoc(path)
     return len(bodies)
 
 def select_bore(p, bore, append=False):

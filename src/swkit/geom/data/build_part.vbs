@@ -122,14 +122,16 @@ jobFile.Close
 
 model.EditRebuild3
 Err.Clear
-model.SaveAs3 outPath, 0, 0
+Dim okSave
+okSave = model.SaveAs3(outPath, 0, 0)
 If Err.Number <> 0 Then Fail "SaveAs3 " & Err.Description
+' 注意：SaveAs3 的返回值在 2025 上不可靠（写过盘也返回 False），
+' 是否真的写盘由 Python 侧比较文件时间戳判断。
+Lg "saveas3_return=" & CStr(okSave)
 If Not fso.FileExists(outPath) Then Fail "file missing"
 Lg "saved_bytes=" & fso.GetFile(outPath).Size
 
-sw.CloseDoc outPath
-Set model = sw.OpenDoc(outPath, 1)
-If model Is Nothing Then Fail "reopen"
+' 实体数、预览都在同一个已保存文档上做；不再关闭重开，减少一次失败面
 Dim bodies, cnt
 bodies = model.GetBodies2(0, True)
 cnt = 0
@@ -143,7 +145,10 @@ model.ViewZoomtofit2
 model.ViewDisplayShaded
 model.SaveBMP previewPath, 1200, 900
 Lg "preview=" & fso.FileExists(previewPath)
+
+Err.Clear
 sw.CloseDoc outPath
+If Err.Number <> 0 Then Lg "close_warning=" & Err.Description
 Lg "success=true"
 logFile.Close
 WScript.Echo "OK " & outPath & " bodies=" & cnt
