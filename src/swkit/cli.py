@@ -207,6 +207,17 @@ def main(argv=None):
             raise SystemExit("用法：swkit new <目录>")
         cmd_new(argv[1])
         return 0
+    if cmd == "docs":
+        # docs [list|close] <项目>
+        mode = argv[1] if len(argv) > 1 and argv[1] in ("list", "close") else "list"
+        proj = argv[2] if len(argv) > 2 and mode == argv[1] else argv[1] if len(argv) > 1 else None
+        if not proj:
+            raise SystemExit("用法：swkit docs [list|close] <项目>")
+        need_windows("docs")
+        pp, plan = plan_of(Spec(proj))
+        from swkit.asm import docs
+        docs.main(mode, pp)
+        return 0
     if len(argv) < 2:
         print(__doc__)
         return 1

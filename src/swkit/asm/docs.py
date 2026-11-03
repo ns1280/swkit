@@ -21,7 +21,11 @@ def main(mode="list", plan_path=None):
     root = os.path.normcase(plan["project_dir"])
     sw = H.connect(exe=plan.get("solidworks_exe"))
     app = H.ptr(sw)
-    docs = H.swraw.array_items(H.swraw.call(app, "GetDocuments", prop=True))
+    v = H.swraw.call(app, "GetDocuments", prop=True)
+    if not (v.vt & H.swraw.VT_ARRAY):
+        print("没有打开的文档")
+        return
+    docs = H.swraw.array_items(v)
     if not docs:
         print("没有打开的文档")
         return
@@ -31,7 +35,8 @@ def main(mode="list", plan_path=None):
         mine = os.path.normcase(path).startswith(root) if path else title.startswith(NEW_PREFIX)
         print("%s %-28s %s" % ("本项目" if mine else "保留", title, path or "(未保存的新文档)"))
         if mode == "close" and mine:
-            sw.CloseDoc(title)
+            # 按完整路径关闭：两个项目可能有同名零件，按标题关会关错/关不掉
+            sw.CloseDoc(path if path else title)
             print("   已关闭", title)
 
 

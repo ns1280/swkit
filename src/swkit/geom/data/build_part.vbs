@@ -127,7 +127,7 @@ If Err.Number <> 0 Then Fail "SaveAs3 " & Err.Description
 If Not fso.FileExists(outPath) Then Fail "file missing"
 Lg "saved_bytes=" & fso.GetFile(outPath).Size
 
-sw.CloseDoc model.GetTitle()
+sw.CloseDoc outPath
 Set model = sw.OpenDoc(outPath, 1)
 If model Is Nothing Then Fail "reopen"
 Dim bodies, cnt
@@ -143,7 +143,7 @@ model.ViewZoomtofit2
 model.ViewDisplayShaded
 model.SaveBMP previewPath, 1200, 900
 Lg "preview=" & fso.FileExists(previewPath)
-sw.CloseDoc model.GetTitle()
+sw.CloseDoc outPath
 Lg "success=true"
 logFile.Close
 WScript.Echo "OK " & outPath & " bodies=" & cnt
