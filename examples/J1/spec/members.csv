@@ -1,0 +1,11 @@
+id,kind,half,xc,xoff,group
+BEAM-2,beam,L,1500,0,J1_L
+SEAMPLATE-2,seam_plate,L,1500,0,J1_L
+PAD-2,pad,L,1500,0,J1_L
+LUG-2,lug,L,1500,0,J1_L
+PIN-2,pin,L,1500,0,J1_L
+BEAM-2,beam,R,1500,0,J1_R
+SEAMPLATE-2,seam_plate,R,1500,0,J1_R
+PAD-2,pad,R,1500,0,J1_R
+LUG-2A,lug,R,1500,-35,J1_R
+LUG-2B,lug,R,1500,35,J1_R

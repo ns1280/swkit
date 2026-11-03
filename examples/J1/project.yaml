@@ -1,0 +1,35 @@
+# J1 中央折叠铰（示例项目）
+#
+# 几何尺寸全部在 spec/ 里，本文件只放工具链设置。
+# 新项目：复制本目录，改 name/baseline 与 spec，然后 `swkit jobs`。
+schema: 1
+
+paths:
+  spec: spec
+  parts: parts
+  asm: asm
+  preview: preview
+  report: report
+  jobs: jobs
+
+solidworks:
+  exe: 'D:\SOLIDWORKS Corp\SOLIDWORKS\SLDWORKS.exe'
+  part_template: 'C:\ProgramData\SOLIDWORKS\SOLIDWORKS 2025\templates\gb_part.prtdot'
+  asm_template: 'C:\ProgramData\SOLIDWORKS\SOLIDWORKS 2025\templates\gb_assembly.asmdot'
+
+# 回归基准（可选）。留空则 swkit regress 直接跳过。
+baseline:
+  dir: 'F:\Group\2026.10.20-coal-trestle\10.20-v1\LJQ_FLOOR_V07'
+  parts:
+    L: F-L.SLDPRT
+    R: F-R.SLDPRT
+  node_x: 1500
+  bbox_tol_mm: 1.0
+  volume_tol_pct: 1.0
+
+options:
+  # 动半的装配原点放到铰轴上（旧方案）。关掉时用完整变换 t = p - R·p。
+  origin_at_axis: true
+  # 2D 断面图的显示范围
+  preview_xlim: [-700, 700]
+  preview_ylim: [-780, 220]

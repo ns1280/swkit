@@ -1,0 +1,42 @@
+# J1 关节定义：轴、动件、配合意图、折叠范围
+#
+# 配合引用写法（build_asm 按此解析）：
+#   {bore: <组名>}                     → 该组耳板孔内圆柱面（用射线选，半径取 spec）
+#   {plane: right|top|front, group: X} → 该组子装配的基准面
+joints:
+  J1:
+    type: hinge
+    axis: {y: 0, z: -75, dir: X}     # 与 params.axis 一致，这里定义运动关系
+    fixed_group: J1_L                # 左半固定
+    moving_group: J1_R               # 右半绕轴转动
+    subassemblies:
+      J1_L: {file: J1_L_ASM.SLDASM, welded: true}   # 半内为焊接组，层内固定
+      J1_R: {file: J1_R_ASM.SLDASM, welded: true}
+    # 顺序有意义：先同心定轴，再锁 X 平移，最后用角度驱动
+    mates:
+      - name: J1_CONCENTRIC
+        type: concentric
+        a: {bore: J1_L}
+        b: {bore: J1_R}
+        align: closest          # 必须 closest；anti 会得到翻转解
+      - name: J1_RIGHT
+        type: coincident
+        a: {plane: right, group: J1_L}
+        b: {plane: right, group: J1_R}
+        align: aligned
+      - name: FOLD_ANGLE
+        type: angle
+        a: {plane: top, group: J1_L}
+        b: {plane: top, group: J1_R}
+        work_deg: 0
+        fold_deg: 90
+        dimension: D1@FOLD_ANGLE
+    fold:
+      from_deg: 0
+      to_deg: 90
+      step_deg: 5
+      direction: +X      # 右半 +Y 转向 +Z（向上收拢）
+    # 允许接触（不算干涉）：两半缝处端板在 Y=0 对接
+    allow_contact:
+      - [L_SEAMPLATE-2, R_SEAMPLATE-2]
+    notes: 焊缝、防脱、开口销、承载不在本试点范围

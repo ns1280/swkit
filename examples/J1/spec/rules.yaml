@@ -1,0 +1,54 @@
+# 必须成立的约束。每条规则都有 ID，失败时按 ID + 构件定位，不说"模型不对"。
+# 表达式在 params 的扁平命名空间求值（如 pad.z1、lug.eye_r、axis.z）。
+rules:
+  - id: AXIS-HEIGHT
+    type: eq
+    expr: pad.z1 + lug.eye_r
+    expect: axis.z
+    tol: 0.001
+    note: 眼环底边与垫板顶相切 → 轴心 = 垫板顶 + R = -135 + 60 = -75
+
+  - id: LUG-TOP
+    type: eq
+    expr: axis.z + 15
+    expect: lug.z_top
+    note: 耳板脚顶在轴上 15
+
+  - id: BEAM-TOP-DECK
+    type: eq
+    expr: beam.top
+    expect: interfaces.deck_top
+    note: 梁顶与压型板顶齐平
+
+  - id: BEAM-END-SEAMPLATE
+    type: eq
+    expr: beam.y_seam
+    expect: seam_plate.t
+    note: 梁缝侧端贴缝处端板内面
+
+  - id: BORE-CLEARANCE
+    type: gte
+    expr: lug.bore - pin.d
+    expect: 1
+    note: 孔径 - 销径 >= 1（单边 0.5 间隙）。bore=0（复现 V07）时此条必然失败，属预期
+
+  - id: LUG-X-GAP
+    type: lug_x_gap
+    expect: 1
+    note: L/R 耳板沿 X 的净距（由 members.csv 的 xoff 与 lug.t 算出）
+
+  - id: PIN-COVERAGE
+    type: pin_coverage
+    expect: 10
+    note: 销轴两端超出最外侧耳板外面的余量
+
+  - id: WORK-CLEARANCE
+    type: clearance2d
+    expect: 0
+    note: 工作态两半不得实体穿透（Y-Z 断面，按 X 区间重叠过滤；对接面接触除外）
+
+  - id: FOLD-SCAN
+    type: fold_scan
+    expect: 0
+    note: 0→90° 离散扫描（步长见 joints.yaml），除声明接触外不得干涉；
+          离散扫描不证明连续全程无碰撞

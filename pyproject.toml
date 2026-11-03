@@ -1,0 +1,28 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "swkit"
+version = "0.1.0"
+description = "Spec-first SolidWorks pipeline: spec -> jobs -> check -> preview -> build -> assemble -> verify"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "pyyaml>=6.0",
+    "matplotlib>=3.7",
+    "pillow>=10.0",
+    "comtypes>=1.4; sys_platform == 'win32'",
+]
+
+[project.scripts]
+swkit = "swkit.cli:main"
+
+[tool.setuptools]
+package-dir = { "" = "src" }
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+swkit = ["geom/data/*.vbs"]
