@@ -2,30 +2,39 @@
 
 先写 spec，再生成 SolidWorks 零件与装配；规则、2D 图、增量重建、实测核对、与基准回归都在同一条链上。
 
-## 安装
+## 使用方式（不用安装）
+
+源码直接在 `F:\swkit`，通过 `swkit.cmd` 启动；它只做三件事：指到解释器、把 `src` 加进
+`PYTHONPATH`、转发参数。
 
 ```powershell
-D:\miniconda3\envs\data-analysis\python.exe -m pip install -e F:\swkit
+F:\swkit\swkit.cmd --version
+F:\swkit\swkit.cmd jobs F:\Group\me\PROJ
 ```
 
-Windows 侧依赖：`pyyaml`、`matplotlib`、`pillow`、`comtypes`（安装时自动带）。
+- 解释器默认 `D:\miniconda3\envs\data-analysis\python.exe`；换环境用 `set SWKIT_PY=...`。
+- 想把 `swkit` 当命令用：把 `F:\swkit` 加进用户 PATH（新终端生效）。
+- `pyproject.toml` 保留但**不是必需**：将来想 `pip install -e F:\swkit` 也能装成包。
+
+依赖：`pyyaml`、`matplotlib`、`pillow`、`comtypes`（都在 `data-analysis` 里）。
 Linux 侧只能用 `jobs / check / preview / new`；`build / asm / verify / regress / fold / shot` 需要
 SolidWorks 2025 与本机 COM。
 
 ## 快速开始
 
 ```powershell
-swkit new  F:\Group\me\PROJ          # 生成目录骨架
+F:\swkit\swkit.cmd new   F:\Group\me\PROJ     # 生成目录骨架
 # 写 PROJ\spec\{params.yaml,members.csv,joints.yaml,rules.yaml}
-swkit jobs    PROJ                   # spec → jobs/*.job + jobs/plan.json
-swkit check   PROJ                   # 规则检查（不开 SolidWorks）
-swkit preview PROJ                   # 2D 断面/折叠/立面
-swkit build   PROJ                   # 建零件（增量：作业未变则跳过）
-swkit asm     PROJ                   # 子装配 + 总装 + 配合
-swkit verify  PROJ                   # 重开核对
-swkit regress PROJ                   # 与 baseline 逐件比 bbox/体积
-swkit fold    PROJ 90                # 折叠态 + 变换核对
-swkit shot    PROJ                   # 轴测截图
+F:\swkit\swkit.cmd jobs    PROJ               # spec → jobs/*.job + jobs/plan.json
+F:\swkit\swkit.cmd check   PROJ               # 规则检查（不开 SolidWorks）
+F:\swkit\swkit.cmd preview PROJ               # 2D 断面/折叠/立面
+F:\swkit\swkit.cmd build   PROJ               # 建零件（增量：作业未变则跳过）
+F:\swkit\swkit.cmd asm     PROJ               # 子装配 + 总装 + 配合
+F:\swkit\swkit.cmd verify  PROJ               # 重开核对
+F:\swkit\swkit.cmd regress PROJ               # 与 baseline 逐件比 bbox/体积
+F:\swkit\swkit.cmd fold    PROJ 90            # 折叠态 + 变换核对
+F:\swkit\swkit.cmd shot    PROJ               # 轴测截图
+F:\swkit\swkit.cmd test                        # 单元测试（不需要 SolidWorks）
 ```
 
 ## 项目配置 `project.yaml`
